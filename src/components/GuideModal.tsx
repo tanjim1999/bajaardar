@@ -165,46 +165,23 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, lang })
               fontWeight: 600,
             }}
           >
-            <CheckCircle2 size={16} flex-shrink={0} />
+            <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
             <span>{current.highlight}</span>
           </div>
         </div>
 
         {/* Quick Tips Matrix */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "0.65rem",
-            marginBottom: "1.25rem",
-          }}
-        >
+        <div className="guide-tips-matrix">
           {steps.map((s, idx) => (
             <div
               key={idx}
+              className={`guide-tip-btn ${activeStep === idx ? "active" : ""}`}
               onClick={() => setActiveStep(idx)}
-              style={{
-                background: activeStep === idx ? "rgba(16, 185, 129, 0.12)" : "rgba(255, 255, 255, 0.03)",
-                border: `1px solid ${activeStep === idx ? "rgba(16, 185, 129, 0.35)" : "var(--border)"}`,
-                borderRadius: "var(--radius-md)",
-                padding: "0.65rem 0.85rem",
-                cursor: "pointer",
-                transition: "var(--transition)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
             >
-              <span style={{ fontSize: "1.1rem" }}>
+              <span className="guide-tip-emoji">
                 {idx === 0 ? "⚖️" : idx === 1 ? "📈" : idx === 2 ? "🧺" : "📢"}
               </span>
-              <span
-                style={{
-                  fontSize: "0.8rem",
-                  fontWeight: 600,
-                  color: activeStep === idx ? "#fff" : "var(--text-muted)",
-                }}
-              >
+              <span className="guide-tip-tag">
                 {s.tag}
               </span>
             </div>

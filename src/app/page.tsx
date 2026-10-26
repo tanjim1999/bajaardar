@@ -306,9 +306,10 @@ export default function Home() {
               className="btn btn-secondary"
               onClick={() => setCompareModalOpen(true)}
               title={t.compareBtn}
+              aria-label={t.compareBtn}
             >
               <ArrowRightLeft size={15} style={{ color: "var(--sky)" }} />
-              <span>{t.compareBtn}</span>
+              <span className="btn-label">{t.compareBtn}</span>
             </button>
 
             {/* Help / Guide Button */}
@@ -316,9 +317,10 @@ export default function Home() {
               className="btn btn-secondary"
               onClick={() => setGuideModalOpen(true)}
               title={t.helpBtn}
+              aria-label={t.helpBtn}
             >
               <HelpCircle size={15} style={{ color: "var(--emerald)" }} />
-              <span>{t.helpBtn}</span>
+              <span className="btn-label">{t.helpBtn}</span>
             </button>
 
             {/* Language Switcher */}
@@ -326,9 +328,10 @@ export default function Home() {
               className="btn btn-secondary"
               onClick={() => setLang((prev) => (prev === "bn" ? "en" : "bn"))}
               title="Toggle Language"
+              aria-label="Toggle Language"
             >
               <Globe2 size={15} />
-              <span>{t.langToggle}</span>
+              <span className="btn-label">{t.langToggle}</span>
             </button>
 
             {/* Report Price Button */}
@@ -342,18 +345,22 @@ export default function Home() {
                 setReportCommodityId("");
                 setReportModalOpen(true);
               }}
+              title={t.reportBtn}
+              aria-label={t.reportBtn}
             >
-              <span>📢</span>
-              <span>{t.reportBtn}</span>
+              <span className="btn-icon">📢</span>
+              <span className="btn-label">{t.reportBtn}</span>
             </button>
 
             {/* Kitchen Basket Button */}
             <button
               className="btn btn-basket"
               onClick={() => setBasketModalOpen(true)}
+              title={t.basketBtn}
+              aria-label={t.basketBtn}
             >
               <ShoppingBag size={16} />
-              <span>{t.basketBtn}</span>
+              <span className="btn-label">{t.basketBtn}</span>
               {basket.length > 0 && (
                 <span className="basket-badge">
                   {lang === "bn" ? toBanglaNumber(basket.length) : basket.length}
@@ -376,9 +383,10 @@ export default function Home() {
                 gap: "0.4rem",
               }}
               title={lang === "bn" ? "অ্যাডমিন ড্যাশবোর্ড" : "Admin Console"}
+              aria-label={lang === "bn" ? "অ্যাডমিন" : "Admin"}
             >
               <Shield size={14} />
-              <span>{lang === "bn" ? "অ্যাডমিন" : "Admin"}</span>
+              <span className="btn-label">{lang === "bn" ? "অ্যাডমিন" : "Admin"}</span>
             </Link>
           </div>
         </div>
