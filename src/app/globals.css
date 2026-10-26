@@ -1214,15 +1214,7 @@ body {
   gap: 1.5rem;
 }
 
-@media (max-width: 768px) {
-  .hero-title { font-size: 1.85rem; }
-  .kpi-grid { grid-template-columns: 1fr; }
-  .toolbar-primary { flex-direction: column; }
-  .search-box, .select-dropdown, .view-mode-group { width: 100%; }
-  .nav-inner { flex-direction: column; align-items: flex-start; }
-  .nav-actions { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-  .container { padding: 0 1.2rem; }
-}
+
 
 /* ==========================================================================
    MARKET COMPARISON STYLES
@@ -2156,5 +2148,443 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
+}
+
+/* ==========================================================================
+   ADVANCED FULLY RESPONSIVE SYSTEM
+   (Mobile <480px, Mobile-Large <640px, Tablet <768px, Laptop <1024px, Desktop 1440px+)
+   ========================================================================== */
+
+/* 1. Large screens & Ultra-wide (1440px+) */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1400px;
+    padding: 0 2rem;
+  }
+
+  .commodity-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.75rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* 2. Laptops & Compact Desktops (992px to 1200px) */
+@media (max-width: 1200px) {
+  .commodity-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .admin-metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3. Tablets & Small Laptops (769px to 991px) */
+@media (max-width: 991px) {
+  .commodity-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.15rem;
+  }
+
+  .hero {
+    padding: 2.75rem 0 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .admin-header-inner {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+/* 4. Tablets & Mobile Landscape (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Prevent any unexpected horizontal overflow */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Container */
+  .container {
+    padding: 0 1rem;
+  }
+
+  /* Navigation Bar */
+  .navbar {
+    padding: 0.65rem 0;
+  }
+
+  .nav-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .brand {
+    justify-content: flex-start;
+  }
+
+  .brand-badge {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+
+  .brand-title {
+    font-size: 1.2rem;
+  }
+
+  .brand-tag {
+    font-size: 0.7rem;
+  }
+
+  .nav-actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-actions .btn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+  }
+
+  .btn-theme {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 2rem 0 1.5rem;
+  }
+
+  .hero-meta {
+    font-size: 0.76rem;
+    padding: 0.35rem 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.94rem;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .kpi-card {
+    padding: 1rem 1.15rem;
+  }
+
+  .kpi-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .kpi-val {
+    font-size: 1.2rem;
+  }
+
+  /* Toolbar */
+  .filter-toolbar {
+    padding: 1rem;
+    margin-bottom: 1.75rem;
+    gap: 0.85rem;
+  }
+
+  .toolbar-primary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .search-box {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-input {
+    font-size: 0.88rem;
+    padding: 0.65rem 0.85rem 0.65rem 2.45rem;
+  }
+
+  .select-dropdown {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .view-mode-group {
+    width: 100%;
+    display: flex;
+  }
+
+  .view-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .hub-pills {
+    display: flex;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .hub-btn {
+    padding: 0.42rem 0.8rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  /* Commodity Cards */
+  .commodity-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .card {
+    padding: 1.15rem;
+  }
+
+  .card-name-primary {
+    font-size: 1.1rem;
+  }
+
+  .price-item-val {
+    font-size: 1.25rem;
+  }
+
+  /* Table Container */
+  .table-responsive-container {
+    margin-bottom: 2.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .market-table th,
+  .market-table td {
+    padding: 0.85rem 0.95rem;
+  }
+
+  /* Modals */
+  .modal-overlay,
+  .admin-modal-overlay {
+    padding: 0.75rem;
+    align-items: flex-end; /* Mobile bottom sheet feel or centered */
+  }
+
+  .modal-content,
+  .admin-modal-content {
+    max-height: 94vh;
+    padding: 1.25rem;
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-md) var(--radius-md);
+    width: 100%;
+  }
+
+  .modal-header,
+  .admin-modal-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .modal-title {
+    font-size: 1.15rem;
+  }
+
+  /* Market comparison modal */
+  .market-compare-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .swap-market-btn {
+    align-self: center;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+  }
+
+  /* Printable Slip */
+  .printable-slip {
+    padding: 1.15rem;
+  }
+
+  .slip-header {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .slip-date {
+    align-self: flex-start;
+  }
+
+  /* Admin Console */
+  .admin-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .admin-header-inner > div:last-child {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .admin-content {
+    padding: 1.25rem 1rem 2.5rem 1rem;
+  }
+
+  .admin-metric-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .admin-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .admin-search-box {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .admin-nav-tabs {
+    gap: 0.25rem;
+    padding: 0.25rem;
+  }
+
+  .admin-tab-btn {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  /* Live Bulletin */
+  .live-bulletin-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem 0.95rem;
+  }
+
+  .live-bulletin-dismiss {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 1.75rem 0;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* 5. Small Mobile Phones (<480px) */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.55rem;
+    letter-spacing: -0.015em;
+  }
+
+  .card-prices {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    padding: 0.75rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .card-btn {
+    width: 100%;
+    padding: 0.65rem;
+  }
+
+  .brand-title {
+    font-size: 1.1rem;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-row.total {
+    font-size: 1.1rem;
+  }
+
+  .modal-content,
+  .admin-modal-content {
+    padding: 1rem;
+  }
+
+  .admin-modal-footer {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .admin-modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-action-btns {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+  }
+
+  .table-btn {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
