@@ -20,6 +20,14 @@ import { DetailModal } from "../components/DetailModal";
 import { GuideModal } from "../components/GuideModal";
 import { MarketCompareModal } from "../components/MarketCompareModal";
 import { PrintSlipModal } from "../components/PrintSlipModal";
+import { PriceAlertModal } from "../components/PriceAlertModal";
+import { BudgetPlannerModal } from "../components/BudgetPlannerModal";
+import { TcbTrackerModal } from "../components/TcbTrackerModal";
+import { PriceHeatmapModal } from "../components/PriceHeatmapModal";
+import { SupplyRadarModal } from "../components/SupplyRadarModal";
+import { StorageGuideModal } from "../components/StorageGuideModal";
+import { SmartShareModal } from "../components/SmartShareModal";
+import { matchesPhoneticQuery } from "../utils/phoneticSearch";
 import {
   Search,
   Plus,
@@ -42,6 +50,14 @@ import {
   Moon,
   ArrowRightLeft,
   Star,
+  Bell,
+  BellRing,
+  Sparkles,
+  Truck,
+  Map,
+  Activity,
+  Lightbulb,
+  Share2,
 } from "lucide-react";
 
 export default function Home() {
@@ -74,6 +90,15 @@ export default function Home() {
   const [basketModalOpen, setBasketModalOpen] = useState(false);
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [printSlipModalOpen, setPrintSlipModalOpen] = useState(false);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const [budgetModalOpen, setBudgetModalOpen] = useState(false);
+  const [tcbTrackerModalOpen, setTcbTrackerModalOpen] = useState(false);
+  const [heatmapModalOpen, setHeatmapModalOpen] = useState(false);
+  const [radarModalOpen, setRadarModalOpen] = useState(false);
+  const [storageGuideModalOpen, setStorageGuideModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [activeAlertCount, setActiveAlertCount] = useState(0);
+  const [triggeredAlertCount, setTriggeredAlertCount] = useState(0);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [detailCommodity, setDetailCommodity] = useState<Commodity | null>(null);
   const [reportCommodityId, setReportCommodityId] = useState("");
@@ -157,6 +182,25 @@ export default function Home() {
     }
   }, []);
 
+  // Price Alerts change detector
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("bajaardar_price_alerts");
+      if (saved && commodities.length > 0) {
+        const parsed = JSON.parse(saved);
+        setActiveAlertCount(parsed.length);
+        const triggered = parsed.filter((alt: any) => {
+          const comm = commodities.find((c) => c.id === alt.commodityId);
+          return comm && comm.currentAvgPrice <= alt.targetPrice;
+        });
+        setTriggeredAlertCount(triggered.length);
+      } else {
+        setActiveAlertCount(0);
+        setTriggeredAlertCount(0);
+      }
+    } catch (e) {}
+  }, [commodities, alertModalOpen]);
+
   // Filtered commodities
   const filteredList = useMemo(() => {
     let list = [...commodities];
@@ -168,12 +212,8 @@ export default function Home() {
     }
 
     if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (c) =>
-          c.nameEn.toLowerCase().includes(q) ||
-          c.nameBn.includes(q) ||
-          c.category.toLowerCase().includes(q)
+      list = list.filter((c) =>
+        matchesPhoneticQuery(search, c.nameEn, c.nameBn, c.category)
       );
     }
 
@@ -217,6 +257,26 @@ export default function Home() {
     });
     const itemName = lang === "bn" ? commodity.nameBn : commodity.nameEn;
     showToast(lang === "bn" ? `${itemName} থলেতে যুক্ত হয়েছে!` : `${itemName} added to basket!`);
+  };
+
+  const handleBatchAddToBasket = (items: { commodity: Commodity; quantity: number }[]) => {
+    setBasket((prev) => {
+      let next = [...prev];
+      for (const item of items) {
+        const idx = next.findIndex((p) => p.commodity.id === item.commodity.id);
+        if (idx >= 0) {
+          next[idx] = { ...next[idx], quantity: next[idx].quantity + item.quantity };
+        } else {
+          next.push(item);
+        }
+      }
+      return next;
+    });
+    showToast(
+      lang === "bn"
+        ? `${toBanglaNumber(items.length)} টি পণ্য সফলভাবে থলেতে যুক্ত হয়েছে!`
+        : `${items.length} items added to basket!`
+    );
   };
 
   const handleUpdateQuantity = (commodityId: string, quantity: number) => {
@@ -310,6 +370,55 @@ export default function Home() {
             >
               <ArrowRightLeft size={15} style={{ color: "var(--sky)" }} />
               <span className="btn-label">{t.compareBtn}</span>
+            </button>
+
+            {/* Target Price Alerts */}
+            <button
+              className="btn btn-secondary"
+              onClick={() => setAlertModalOpen(true)}
+              title={t.alertsBtn}
+              aria-label={t.alertsBtn}
+              style={{ position: "relative" }}
+            >
+              {triggeredAlertCount > 0 ? (
+                <BellRing size={15} style={{ color: "var(--rose)" }} />
+              ) : (
+                <Bell size={15} style={{ color: "var(--amber)" }} />
+              )}
+              <span className="btn-label">{t.alertsBtn}</span>
+              {activeAlertCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-4px",
+                    right: "-4px",
+                    background: triggeredAlertCount > 0 ? "var(--rose)" : "var(--amber)",
+                    color: "#fff",
+                    fontSize: "0.58rem",
+                    fontWeight: 800,
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 1,
+                  }}
+                >
+                  {lang === "bn" ? toBanglaNumber(activeAlertCount) : activeAlertCount}
+                </span>
+              )}
+            </button>
+
+            {/* Share / Export */}
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShareModalOpen(true)}
+              title={t.shareBtn}
+              aria-label={t.shareBtn}
+            >
+              <Share2 size={15} style={{ color: "var(--emerald)" }} />
+              <span className="btn-label">{t.shareBtn}</span>
             </button>
 
             {/* Help / Guide Button */}
@@ -519,6 +628,134 @@ export default function Home() {
                 <div className="kpi-sub">{t.tcbSub}</div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 4.1. Interactive Market Feature & Tools Hub */}
+        <section className="feature-hub-section">
+          <div className="feature-hub-header">
+            <span className="feature-hub-title">
+              <Sparkles size={14} style={{ color: "var(--emerald)" }} />
+              <span>{lang === "bn" ? "বাজার ফিচার ও স্মার্ট টুলস" : "Market Tools & Intelligence Hub"}</span>
+            </span>
+            <span style={{ fontSize: "0.72rem", color: "var(--text-dim)" }}>
+              {lang === "bn" ? "৭টি ইন্টারেক্টিভ সুবিধা সক্রিয়" : "7 Interactive Features Active"}
+            </span>
+          </div>
+
+          <div className="feature-hub-bar">
+            {/* 1. Target Price Alerts */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setAlertModalOpen(true)}
+              title={t.alertsBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(245, 158, 11, 0.15)", color: "var(--amber)" }}>
+                {triggeredAlertCount > 0 ? <BellRing size={15} /> : <Bell size={15} />}
+              </div>
+              <span>{t.alertsBtn}</span>
+              {activeAlertCount > 0 ? (
+                <span className={`hub-badge ${triggeredAlertCount > 0 ? "rose" : "amber"}`}>
+                  {triggeredAlertCount > 0
+                    ? lang === "bn"
+                      ? "দাম কমেছে!"
+                      : "Target Hit!"
+                    : lang === "bn"
+                    ? toBanglaNumber(activeAlertCount)
+                    : activeAlertCount}
+                </span>
+              ) : (
+                <span className="hub-badge" style={{ background: "rgba(245, 158, 11, 0.12)", color: "var(--amber)" }}>
+                  {lang === "bn" ? "অ্যালার্ট" : "Alerts"}
+                </span>
+              )}
+            </button>
+
+            {/* 2. Monthly Budget Planner */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setBudgetModalOpen(true)}
+              title={t.budgetBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(16, 185, 129, 0.15)", color: "var(--emerald)" }}>
+                <Sparkles size={15} />
+              </div>
+              <span>{t.budgetBtn}</span>
+              <span className="hub-badge emerald">{lang === "bn" ? "পারিবারিক সাশ্রয়" : "Bulk Save"}</span>
+            </button>
+
+            {/* 3. TCB Open-Truck Sales Tracker */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setTcbTrackerModalOpen(true)}
+              title={t.tcbTrackerBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(56, 189, 248, 0.15)", color: "var(--sky)" }}>
+                <Truck size={15} />
+              </div>
+              <span>{t.tcbTrackerBtn}</span>
+              <span className="hub-badge" style={{ background: "rgba(56, 189, 248, 0.2)", color: "var(--sky)" }}>
+                {lang === "bn" ? "ভর্তুকি সেল" : "Subsidized"}
+              </span>
+            </button>
+
+            {/* 4. Division Heatmap */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setHeatmapModalOpen(true)}
+              title={t.heatmapBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(168, 85, 247, 0.15)", color: "#a855f7" }}>
+                <Map size={15} />
+              </div>
+              <span>{t.heatmapBtn}</span>
+              <span className="hub-badge" style={{ background: "rgba(168, 85, 247, 0.2)", color: "#a855f7" }}>
+                {lang === "bn" ? "৮ বিভাগ বিস্তার" : "8 Divs"}
+              </span>
+            </button>
+
+            {/* 5. Supply Radar */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setRadarModalOpen(true)}
+              title={t.radarBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(16, 185, 129, 0.15)", color: "var(--emerald)" }}>
+                <Activity size={15} />
+              </div>
+              <span>{t.radarBtn}</span>
+              <span className="hub-badge emerald">{lang === "bn" ? "পূর্বাভাস" : "Forecast"}</span>
+            </button>
+
+            {/* 6. Food Storage & Anti-Waste Tips */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setStorageGuideModalOpen(true)}
+              title={t.tipsBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(245, 158, 11, 0.15)", color: "var(--amber)" }}>
+                <Lightbulb size={15} />
+              </div>
+              <span>{t.tipsBtn}</span>
+              <span className="hub-badge" style={{ background: "rgba(245, 158, 11, 0.2)", color: "var(--amber)" }}>
+                {lang === "bn" ? "অপচয় রোধ" : "Tips"}
+              </span>
+            </button>
+
+            {/* 7. Share & Export CSV */}
+            <button
+              className="feature-hub-btn"
+              onClick={() => setShareModalOpen(true)}
+              title={t.shareBtn}
+            >
+              <div className="hub-icon-wrap" style={{ background: "rgba(2, 132, 199, 0.15)", color: "var(--sky)" }}>
+                <Share2 size={15} />
+              </div>
+              <span>{t.shareBtn}</span>
+              <span className="hub-badge" style={{ background: "rgba(2, 132, 199, 0.2)", color: "var(--sky)" }}>
+                WhatsApp / CSV
+              </span>
+            </button>
           </div>
         </section>
 
@@ -950,6 +1187,55 @@ export default function Home() {
       <GuideModal
         isOpen={guideModalOpen}
         onClose={() => setGuideModalOpen(false)}
+        lang={lang}
+      />
+
+      <PriceAlertModal
+        isOpen={alertModalOpen}
+        onClose={() => setAlertModalOpen(false)}
+        commodities={commodities}
+        lang={lang}
+        onAlertTriggered={(msg) => showToast(msg)}
+      />
+
+      <BudgetPlannerModal
+        isOpen={budgetModalOpen}
+        onClose={() => setBudgetModalOpen(false)}
+        commodities={commodities}
+        lang={lang}
+        onAddMultipleToBasket={handleBatchAddToBasket}
+      />
+
+      <TcbTrackerModal
+        isOpen={tcbTrackerModalOpen}
+        onClose={() => setTcbTrackerModalOpen(false)}
+        lang={lang}
+      />
+
+      <PriceHeatmapModal
+        isOpen={heatmapModalOpen}
+        onClose={() => setHeatmapModalOpen(false)}
+        commodities={commodities}
+        lang={lang}
+      />
+
+      <SupplyRadarModal
+        isOpen={radarModalOpen}
+        onClose={() => setRadarModalOpen(false)}
+        commodities={commodities}
+        lang={lang}
+      />
+
+      <StorageGuideModal
+        isOpen={storageGuideModalOpen}
+        onClose={() => setStorageGuideModalOpen(false)}
+        lang={lang}
+      />
+
+      <SmartShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        commodities={commodities}
         lang={lang}
       />
     </div>
