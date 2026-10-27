@@ -267,6 +267,8 @@ export const getSingleCommodity = (id: string) => {
   };
 };
 
+export const getCommodityById = getSingleCommodity;
+
 export const createCommodity = (input: Omit<Commodity, "id" | "priceHistory"> & { id?: string }) => {
   const store = ensureLoaded();
   const id = input.id || `comm_${Date.now()}`;
